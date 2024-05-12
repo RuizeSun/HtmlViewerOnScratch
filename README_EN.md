@@ -3,8 +3,8 @@
      HtmlViewerOnScratch (HtmlViewer) 2.1
 </h1>
 <h4 align="center">
-     In your Scratch project<br/>
-     Embed HTML snippets.
+     Embed HTML snippets<br/>
+     in your Scratch project
 </h4>
 <h4 align="center">
      <a href="./README.md">Simplified Chinese</a> |
