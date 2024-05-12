@@ -1,18 +1,17 @@
 console.log("成功加载 HtmlViewer 2.0。\n作者：Ruize Sun\n感谢使用！");
-// 添加 CSS
+// HtmlViewer 窗口初始化
 let styles = document.createElement("style");
 styles.innerHTML =
-	".HtmlViewer{position:absolute;width:640px;height:480px;z-index:9999;top:4px;right:4px;background-color:white;border:2px solid black;border-radius:6px;animation: fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:red;font-size:1.5rem;cursor: pointer;}.HtmlViewerWindowTitle{background:linear-gradient(to bottom,#ccc,#999);padding: 4px;cursor: default;user-select: none;}.HtmlViewerWindowTitle > span{color:white;font-weight: bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}";
+	".HtmlViewer{position:absolute;width:1024px;height:768px;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:2px solid black;border-radius:6px;animation: fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:red;font-size:1.5rem;cursor: pointer;}.HtmlViewerWindowTitle{background:linear-gradient(to bottom,#ccc,#999);padding: 4px;cursor: default;user-select: none;}.HtmlViewerWindowTitle > span{color:white;font-weight: bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}.HtmlViewerProjectIframeBox{height:100%;width:100%;overflow:hidden;}";
 
 document.head.appendChild(styles);
-// 添加 Div 元素
+
 div = document.createElement("div");
 div.classList.add("HtmlViewer");
 div.classList.add("HtmlViewerWindow");
 div.setAttribute("id", "HtmlViewerWindow");
 div.innerHTML =
 	'<div class="HtmlViewerWindowTitle" id="HtmlViewerWindowTitle"><a href=\'javascript:document.body.removeChild(document.getElementById("HtmlViewerWindow"));\' id=\'HtmlViewerCloseButton\'>●</a>&nbsp;&nbsp;<span>HtmlViewer</span></div><div class="HtmlViewerBox"></div>';
-
 async function windowMovingEvent() {
 	var e = 0,
 		o = 0,
@@ -40,7 +39,35 @@ async function windowMovingEvent() {
 			n = !1;
 		});
 }
-
+// 作品展示UI更改
+function changeButton() {
+	/**
+	document
+		.getElementById("HtmlViewerIframe")
+		.getElementsByClassName(
+			"ma-2 sd v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default accent"
+		)[0].href = "https://www.40code.com/#page=work&id=" + args.projectid;
+	document
+		.getElementById("HtmlViewerIframe")
+		.getElementsByClassName(
+			"ma-2 sd v-btn v-btn--is-elevated v-btn--has-bg theme--light v-size--default accent"
+		)[0]
+		.getElementById("HtmlViewerIframe")
+		.getElementsByClassName("v-btn__content")[0].innerHTML = "重新加载作品";
+	document
+		.getElementById("HtmlViewerIframe")
+		.getElementsByClassName(
+			"v-icon notranslate mdi mdi-search theme--light"
+		)[0]
+		.parentNode.parentNode.setAttribute("disabled", "true");
+	document
+		.getElementById("HtmlViewerIframe")
+		.getElementsByClassName(
+			"v-icon notranslate mdi mdi-search theme--light"
+		)[0]
+		.parentNode.setAttribute("style", "cursor: no-drop;");*/
+}
+// Turbo 平台支持
 // 主 Class
 class HtmlViewer {
 	constructor(runtime) {
@@ -49,13 +76,13 @@ class HtmlViewer {
 
 	getInfo() {
 		return {
-			id: "HtmlViewer2d1",
+			id: "HtmlViewer",
 			name: "HtmlViewer 2.1",
 			blocks: [
 				{
 					opcode: "showHtml",
 					blockType: Scratch.BlockType.COMMAND,
-					text: "显示HTML代码 [html] (不支持 JS)",
+					text: "显示HTML代码 [html]",
 					arguments: {
 						html: {
 							type: Scratch.ArgumentType.STRING,
@@ -64,13 +91,13 @@ class HtmlViewer {
 					},
 				},
 				{
-					opcode: "showHtmlByList",
+					opcode: "showProject",
 					blockType: Scratch.BlockType.COMMAND,
-					text: "根据列表 [LIST] 显示HTML代码（不支持JS）",
+					text: "窗口显示作品 [projectid] ",
 					arguments: {
-						LIST: {
+						projectid: {
 							type: Scratch.ArgumentType.STRING,
-							defaultValue: "list",
+							defaultValue: "1000",
 						},
 					},
 				},
@@ -85,25 +112,26 @@ class HtmlViewer {
 	}
 
 	showHtml(args) {
-		const html = args.html;
+		const html = markdownToHtml(args.html);
 		div.getElementsByClassName("HtmlViewerBox")[0].innerHTML = html;
 		document.body.appendChild(div);
 		windowMovingEvent();
 	}
-	showHtmlByList(args, util) {
-		var html = util.target
-			.lookupVariableByNameAndType(
-				Scratch.Cast.toString(args.LIST),
-				"list"
-			)
-			.value.join("\n");
-		div.getElementsByClassName("HtmlViewerBox")[0].innerHTML = html;
-		document.body.appendChild(div);
-		windowMovingEvent();
+	showProject(args, util) {
+		if (isNaN(Number(args.projectid, 10))) {
+			console.error("作品ID不合法");
+		} else {
+			const html =
+				"<div class='HtmlViewerProjectIframeBox'><iframe id='HtmlViewerIframe' src='https://www.40code.com/#page=work&id=" +
+				args.projectid +
+				"' height='200%' width='100%' style='margin-top:-170px;' scrolling='no' onload='changeButton()'></iframe></div>";
+			div.getElementsByClassName("HtmlViewerBox")[0].innerHTML = html;
+			document.body.appendChild(div);
+			windowMovingEvent();
+		}
 	}
 	closeHtmlViewer(args) {
 		document.body.removeChild(document.getElementById("HtmlViewerWindow"));
 	}
 }
-
 Scratch.extensions.register(new HtmlViewer());
