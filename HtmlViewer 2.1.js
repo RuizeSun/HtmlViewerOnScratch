@@ -80,6 +80,10 @@ class HtmlViewer {
 			name: "HtmlViewer 2.1",
 			blocks: [
 				{
+					blockType: Scratch.BlockType.LABEL,
+					text: "基本功能",
+				},
+				{
 					opcode: "showHtml",
 					blockType: Scratch.BlockType.COMMAND,
 					text: "显示HTML代码 [html]",
@@ -91,21 +95,44 @@ class HtmlViewer {
 					},
 				},
 				{
-					opcode: "showProject",
-					blockType: Scratch.BlockType.COMMAND,
-					text: "窗口显示作品 [projectid] ",
-					arguments: {
-						projectid: {
-							type: Scratch.ArgumentType.STRING,
-							defaultValue: "1000",
-						},
-					},
-				},
-				{
 					opcode: "closeHtmlViewer",
 					blockType: Scratch.BlockType.COMMAND,
 					text: "关闭 HTML 显示窗口",
 					arguments: {},
+				},
+				{
+					blockType: Scratch.BlockType.LABEL,
+					text: "社区功能",
+				},
+				{
+					opcode: "showProject",
+					blockType: Scratch.BlockType.COMMAND,
+					text: "显示作品 [projectid] ",
+					arguments: {
+						projectid: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "0",
+						},
+					},
+				},
+				{
+					opcode: "showForum",
+					blockType: Scratch.BlockType.COMMAND,
+					text: "显示论坛帖子 [postid] ",
+					arguments: {
+						postid: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "0",
+						},
+					},
+				},
+				{
+					blockType: Scratch.BlockType.LABEL,
+					text: "可到Github仓库进行Bug反馈",
+				},
+				{
+					blockType: Scratch.BlockType.LABEL,
+					text: "（作者：RuizeSun）",
 				},
 			],
 		};
@@ -125,6 +152,19 @@ class HtmlViewer {
 				"<div class='HtmlViewerProjectIframeBox'><iframe id='HtmlViewerIframe' src='https://www.40code.com/#page=work&id=" +
 				args.projectid +
 				"' height='200%' width='100%' style='margin-top:-170px;' scrolling='no' onload='changeButton()'></iframe></div>";
+			div.getElementsByClassName("HtmlViewerBox")[0].innerHTML = html;
+			document.body.appendChild(div);
+			windowMovingEvent();
+		}
+	}
+	showForum(args, util) {
+		if (isNaN(Number(args.postid, 10))) {
+			console.error("帖子ID不合法");
+		} else {
+			const html =
+				"<div class='HtmlViewerProjectIframeBox'><iframe id='HtmlViewerIframe' src='https://www.40code.com/#page=post&id=" +
+				args.postid +
+				"' height='200%' width='100%' style='margin-top:-170px;' scrolling='yes' onload='changeButton()'></iframe></div>";
 			div.getElementsByClassName("HtmlViewerBox")[0].innerHTML = html;
 			document.body.appendChild(div);
 			windowMovingEvent();
