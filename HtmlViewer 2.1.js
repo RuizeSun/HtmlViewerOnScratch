@@ -2,7 +2,7 @@ console.log("成功加载 HtmlViewer 2.0。\n作者：Ruize Sun\n感谢使用！
 // HtmlViewer 窗口初始化
 let styles = document.createElement("style");
 styles.innerHTML =
-	".HtmlViewer{position:absolute;width:1024px;height:768px;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:2px solid black;border-radius:6px;animation: fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:red;font-size:1.5rem;cursor: pointer;}.HtmlViewerWindowTitle{background:linear-gradient(to bottom,#ccc,#999);padding: 4px;cursor: default;user-select: none;}.HtmlViewerWindowTitle > span{color:white;font-weight: bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}.HtmlViewerProjectIframeBox{height:100%;width:100%;overflow:hidden;}";
+	".HtmlViewer{position:absolute;width:720px;height:640px;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:2px solid black;border-radius:6px;animation: fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:red;font-size:1.5rem;cursor: pointer;}.HtmlViewerWindowTitle{background:linear-gradient(to bottom,#ccc,#999);padding: 4px;cursor: default;user-select: none;}.HtmlViewerWindowTitle > span{color:white;font-weight: bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}.HtmlViewerProjectIframeBox{height:100%;width:100%;overflow:hidden;}";
 
 document.head.appendChild(styles);
 
@@ -111,7 +111,7 @@ class HtmlViewer {
 					arguments: {
 						projectid: {
 							type: Scratch.ArgumentType.STRING,
-							defaultValue: "0",
+							defaultValue: "8",
 						},
 					},
 				},
@@ -122,7 +122,38 @@ class HtmlViewer {
 					arguments: {
 						postid: {
 							type: Scratch.ArgumentType.STRING,
-							defaultValue: "0",
+							defaultValue: "198",
+						},
+					},
+				},
+				{
+					opcode: "showUser",
+					blockType: Scratch.BlockType.COMMAND,
+					text: "显示用户主页 [usrid] ",
+					arguments: {
+						usrid: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "40",
+						},
+					},
+				},
+				{
+					blockType: Scratch.BlockType.LABEL,
+					text: "实验功能",
+				},
+				{
+					opcode: "gogithub",
+					blockType: Scratch.BlockType.COMMAND,
+					text: "Github [type] [id]",
+					arguments: {
+						type: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "res",
+							menu: "githubType",
+						},
+						id: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "RuizeSun/HtmlViewerOnScratch",
 						},
 					},
 				},
@@ -135,6 +166,21 @@ class HtmlViewer {
 					text: "（作者：RuizeSun）",
 				},
 			],
+			menus: {
+				githubType: {
+					acceptReporters: false,
+					items: [
+						{
+							text: "仓库",
+							value: "res",
+						},
+						{
+							text: "用户",
+							value: "usr",
+						},
+					],
+				},
+			},
 		};
 	}
 
@@ -148,30 +194,62 @@ class HtmlViewer {
 		if (isNaN(Number(args.projectid, 10))) {
 			console.error("作品ID不合法");
 		} else {
-			const html =
-				"<div class='HtmlViewerProjectIframeBox'><iframe id='HtmlViewerIframe' src='https://www.40code.com/#page=work&id=" +
-				args.projectid +
-				"' height='200%' width='100%' style='margin-top:-170px;' scrolling='no' onload='changeButton()'></iframe></div>";
-			div.getElementsByClassName("HtmlViewerBox")[0].innerHTML = html;
-			document.body.appendChild(div);
-			windowMovingEvent();
+			window.open(
+				"https://www.40code.com/#page=work&id=" + args.projectid,
+				"_blank",
+				"top=4,right=4,toolbar=no,menubar=no,location=no, status=no"
+			);
+		}
+	}
+	showUser(args, util) {
+		if (isNaN(Number(args.usrid, 10))) {
+			console.error("用户ID不合法");
+		} else {
+			window.open(
+				"https://www.40code.com/#page=user&id=" + args.usrid,
+				"_blank",
+				"top=4,right=4,toolbar=no,menubar=no,location=no, status=no"
+			);
 		}
 	}
 	showForum(args, util) {
 		if (isNaN(Number(args.postid, 10))) {
 			console.error("帖子ID不合法");
 		} else {
-			const html =
-				"<div class='HtmlViewerProjectIframeBox'><iframe id='HtmlViewerIframe' src='https://www.40code.com/#page=post&id=" +
-				args.postid +
-				"' height='200%' width='100%' style='margin-top:-170px;' scrolling='yes' onload='changeButton()'></iframe></div>";
-			div.getElementsByClassName("HtmlViewerBox")[0].innerHTML = html;
-			document.body.appendChild(div);
-			windowMovingEvent();
+			window.open(
+				"https://www.40code.com/#page=post&id=" + args.postid,
+				"_blank",
+				"top=4,right=4,toolbar=no,menubar=no,location=no, status=no"
+			);
 		}
 	}
 	closeHtmlViewer(args) {
 		document.body.removeChild(document.getElementById("HtmlViewerWindow"));
+	}
+	gogithub(args) {
+		if (args.type == "res") {
+			const uri = args.id
+				.replaceAll("%", "_")
+				.replaceAll("\\", "_")
+				.replaceAll("*", "_")
+				.replaceAll("..", "_");
+			window.open(
+				"https://www.github.com/" + uri,
+				"_blank",
+				"top=4,right=4,toolbar=no,menubar=no,location=no, status=no"
+			);
+		} else {
+			const uri = args.id
+				.replaceAll("%", "_")
+				.replaceAll("\\", "_")
+				.replaceAll("*", "_")
+				.replaceAll("..", "_");
+			window.open(
+				"https://www.github.com/" + uri + "/",
+				"_blank",
+				"toolbar=no,menubar=no,location=no, status=no"
+			);
+		}
 	}
 }
 Scratch.extensions.register(new HtmlViewer());
