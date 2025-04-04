@@ -77,7 +77,7 @@ class HtmlViewer {
 				{
 					opcode: "showHtml",
 					blockType: Scratch.BlockType.COMMAND,
-					text: "显示HTML代码。[title] [html] [width] [height]",
+					text: "显示HTML代码。[title] [html] 【大小：[width]×[height]（单位：px）】",
 					arguments: {
 						title: {
 							type: Scratch.ArgumentType.STRING,
@@ -89,11 +89,11 @@ class HtmlViewer {
 						},
 						width: {
 							type: Scratch.ArgumentType.STRING,
-							defaultValue: "窗口宽度(px)",
+							defaultValue: "640",
 						},
 						height: {
 							type: Scratch.ArgumentType.STRING,
-							defaultValue: "窗口高度(px)",
+							defaultValue: "480",
 						},
 					},
 				},
