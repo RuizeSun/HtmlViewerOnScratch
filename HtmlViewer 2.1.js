@@ -1,8 +1,8 @@
-console.log("成功加载 HtmlViewer 2.1.4。\n作者：Ruize Sun\n感谢使用！");
+console.log("成功加载 HtmlViewer 2.1.5。\n作者：Ruize Sun\n感谢使用！");
 
 // HtmlViewer 窗口初始化
 let styles = document.createElement("style");
-styles.innerHTML = ".HtmlViewer{position:absolute;width:720px;height:640px;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:2px solid black;border-radius:6px;animation: fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:red;font-size:1.5rem;cursor: pointer;}.HtmlViewerWindowTitle{background:linear-gradient(to bottom,#ccc,#999);padding: 4px;cursor: default;user-select: none;}.HtmlViewerWindowTitle > span{color:white;font-weight: bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}.HtmlViewerProjectIframeBox{height:100%;width:100%;overflow:hidden;}";
+styles.innerHTML = ".HtmlViewer{position:absolute;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:2px solid black;border-radius:6px;animation: fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:red;font-size:1.5rem;cursor: pointer;}.HtmlViewerWindowTitle{background:linear-gradient(to bottom,#ccc,#999);padding: 4px;cursor: default;user-select: none;}.HtmlViewerWindowTitle > span{color:white;font-weight: bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}.HtmlViewerProjectIframeBox{height:100%;width:100%;overflow:hidden;}";
 document.head.appendChild(styles);
 div = document.createElement("div");
 div.classList.add("HtmlViewer");
@@ -77,7 +77,7 @@ class HtmlViewer {
 				{
 					opcode: "showHtml",
 					blockType: Scratch.BlockType.COMMAND,
-					text: "显示HTML代码 [title] [html]",
+					text: "显示HTML代码。[title] [html] [width] [height]",
 					arguments: {
 						title: {
 							type: Scratch.ArgumentType.STRING,
@@ -86,6 +86,14 @@ class HtmlViewer {
 						html: {
 							type: Scratch.ArgumentType.STRING,
 							defaultValue: "窗口内容",
+						},
+						width: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "窗口宽度(px)",
+						},
+						height: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "窗口高度(px)",
 						},
 					},
 				},
@@ -181,6 +189,9 @@ class HtmlViewer {
 
 	showHtml(args) {
 		const html = markdownToHtml(args.html);
+		let styles = document.createElement("style");
+		styles.innerHTML = ".HtmlViewer{width: " + args.width + "px;height: " + args.height + "px;}";
+		document.head.appendChild(styles);
 		div.getElementsByClassName("HtmlViewerBox")[0].innerHTML = html;
 		div.getElementsByClassName("HVTitle")[0].innerHTML = args.title;
 		document.body.appendChild(div);
