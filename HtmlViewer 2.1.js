@@ -1,4 +1,4 @@
-console.log("正在加载 HtmlViewer 2.1.6。\n作者：Ruize Sun\n感谢使用！");
+console.log("正在加载 HtmlViewer 2.1.7。\n作者：Ruize Sun\n感谢使用！");
 
 function vboxStyleInit() {
 	/*
@@ -6,7 +6,7 @@ function vboxStyleInit() {
 	【原理】这个函数会定义 div#HtmlViewerStyle 在 head 标签中。
 	*/
 	let styles = document.createElement("style");
-	styles.innerHTML = ".HtmlViewer{position:absolute;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:2px solid black;border-radius:6px;animation: fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:red;font-size:1.5rem;cursor: pointer;}.HtmlViewerWindowTitle{background:linear-gradient(to bottom,#ccc,#999);padding: 4px;cursor: default;user-select: none;}.HtmlViewerWindowTitle > span{color:white;font-weight: bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}.HtmlViewerProjectIframeBox{height:100%;width:100%;overflow:hidden;}"; // 默认样式
+	styles.innerHTML = ".HtmlViewer{position:absolute;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:2px solid black;border-radius:6px;animation: fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:red;font-size:1.5rem;cursor: pointer;}.HtmlViewerWindowTitle{background:linear-gradient(to bottom,#ccc,#999);padding: 4px;cursor: default;user-select: none;}.HtmlViewerWindowTitle > span{color:white;font-weight: bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}"; // 默认样式
 	styles.setAttribute("id", "HtmlViewerStyle");
 	document.head.appendChild(styles);
 	let sizestyles = document.createElement("style");
@@ -134,6 +134,21 @@ class HtmlViewer {
 					},
 				},
 				{
+					opcode: "resizeViewer",
+					blockType: Scratch.BlockType.COMMAND,
+					text: "更改窗口大小为 [width] × [height] （单位：px）",
+					arguments: {
+						width: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "320",
+						},
+						height: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "240",
+						},
+					},
+				},
+				{
 					opcode: "closeHtmlViewer",
 					blockType: Scratch.BlockType.COMMAND,
 					text: "关闭 HTML 显示窗口",
@@ -223,8 +238,16 @@ class HtmlViewer {
 					acceptReporters: false,
 					items: [
 						{
-							text: "默认样式",
+							text: "默认",
 							value: "default",
+						},
+						{
+							text: "现代Ⅰ",
+							value: "modern1",
+						},
+						{
+							text: "现代Ⅱ",
+							value: "modern2",
 						},
 					],
 				},
@@ -233,17 +256,20 @@ class HtmlViewer {
 	}
 
 	setPresetStyle(args) {
-		let presets = { default: '".HtmlViewer{position:absolute;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:2px solid black;border-radius:6px;animation: fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:red;font-size:1.5rem;cursor: pointer;}.HtmlViewerWindowTitle{background:linear-gradient(to bottom,#ccc,#999);padding: 4px;cursor: default;user-select: none;}.HtmlViewerWindowTitle > span{color:white;font-weight: bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}.HtmlViewerProjectIframeBox{height:100%;width:100%;overflow:hidden;}"' };
+		// 设置预设自定义样式
+		let presets = { default: ".HtmlViewer{position:absolute;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:2px solid black;border-radius:6px;animation: fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:red;font-size:1.5rem;cursor: pointer;}.HtmlViewerWindowTitle{background:linear-gradient(to bottom,#ccc,#999);padding: 4px;cursor: default;user-select: none;}.HtmlViewerWindowTitle > span{color:white;font-weight: bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}", modern1: ".HtmlViewer{position:absolute;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:1px solid gray;border-radius:4px;animation:fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:rgb(255,80,70);font-size:1.5rem;cursor:pointer;margin-left:0.5rem;}.HtmlViewerWindowTitle{background:#CCC;padding:4px;cursor:default;user-select:none;}.HtmlViewerWindowTitle > span{color:white;font-weight:bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}", modern2: ".HtmlViewer{position:absolute;z-index:9999;top:4px;right:4px;overflow:hidden;background-color:white;border:1px solid gray;animation:fadein 0.15s;}#HtmlViewerCloseButton{text-decoration:none;color:rgb(255,80,70);font-size:1.5rem;cursor:pointer;margin-left:0.5rem;}.HtmlViewerWindowTitle{background:white;padding:4px;cursor:default;user-select:none;border-bottom:1px solid gray;}.HtmlViewerWindowTitle > span{color:black;font-weight:bold;}.HtmlViewerBox{padding:6px;}#HtmlViewerCloseButton:hover{color:#E00}@keyframes fadein{0%{opacity:0;transform:translateY(100px);}100%{opacity:1;transform:translateY(0px);}}" };
 		let styles = document.getElementById("HtmlViewerStyle");
 		styles.innerHTML = presets[args.preset];
 	}
 
 	setStyle(args) {
+		// 自定义样式
 		let styles = document.getElementById("HtmlViewerStyle");
 		styles.innerHTML = args.style.replaceAll("<", "").replaceAll(">", "");
 	}
 
 	showHtml(args) {
+		// 显示窗口
 		const html = markdownToHtmlS(args.html);
 		let styles = document.getElementById("HtmlViewerSizeStyle");
 		styles.innerHTML = ".HtmlViewer{width: " + args.width + "px;height: " + args.height + "px;}";
@@ -252,31 +278,47 @@ class HtmlViewer {
 		document.body.appendChild(div);
 		windowMovingEvent();
 	}
-	showProject(args, util) {
+
+	closeHtmlViewer() {
+		// 关闭窗口
+		document.body.removeChild(document.getElementById("HtmlViewerWindow"));
+	}
+
+	resizeViewer(args) {
+		// 更改窗口大小
+		let styles = document.getElementById("HtmlViewerSizeStyle");
+		styles.innerHTML = ".HtmlViewer{width: " + args.width + "px;height: " + args.height + "px;}";
+	}
+
+	showProject(args) {
+		// 显示作品
 		if (isNaN(Number(args.projectid, 10))) {
 			console.error("作品ID不合法");
 		} else {
 			window.open("https://www.40code.com/#page=work&id=" + args.projectid, "_blank", "top=4,right=4,toolbar=no,menubar=no,location=no, status=no");
 		}
 	}
-	showUser(args, util) {
+
+	showUser(args) {
+		// 显示用户
 		if (isNaN(Number(args.usrid, 10))) {
 			console.error("用户ID不合法");
 		} else {
 			window.open("https://www.40code.com/#page=user&id=" + args.usrid, "_blank", "top=4,right=4,toolbar=no,menubar=no,location=no, status=no");
 		}
 	}
-	showForum(args, util) {
+
+	showForum(args) {
+		// 显示论坛帖子
 		if (isNaN(Number(args.postid, 10))) {
 			console.error("帖子ID不合法");
 		} else {
 			window.open("https://www.40code.com/#page=post&id=" + args.postid, "_blank", "top=4,right=4,toolbar=no,menubar=no,location=no, status=no");
 		}
 	}
-	closeHtmlViewer(args) {
-		document.body.removeChild(document.getElementById("HtmlViewerWindow"));
-	}
+
 	gogithub(args) {
+		// Github
 		if (args.type == "res") {
 			const uri = args.id.replaceAll("%", "_").replaceAll("\\", "_").replaceAll("*", "_").replaceAll("..", "_");
 			window.open("https://www.github.com/" + uri, "_blank", "top=4,right=4,toolbar=no,menubar=no,location=no, status=no");
