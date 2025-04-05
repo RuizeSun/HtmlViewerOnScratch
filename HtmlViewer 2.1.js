@@ -1,4 +1,4 @@
-console.log("正在加载 HtmlViewer 2.1.8。\n作者：Ruize Sun\n感谢使用！");
+console.log("正在加载 HtmlViewer 2.1.9。\n作者：Ruize Sun\n感谢使用！");
 
 function vboxStyleInit() {
 	/*
@@ -54,24 +54,42 @@ async function windowMovingEvent() {
 	function t(e) {
 		return document.getElementById(e);
 	}
-	t("HtmlViewerWindowTitle").addEventListener("mousedown", function (m) {
-		m = m || window.event;
-		(e = m.pageX - t("HtmlViewerWindow").offsetLeft), (o = m.pageY - t("HtmlViewerWindow").offsetTop), (n = !0);
-	}),
-		(document.onmousemove = function (m) {
-			m = m || window.event;
-			var u = 0,
-				d = 0;
-			!0 === n && ((u = m.pageX - e), (d = m.pageY - o), (t("HtmlViewerWindow").style.left = u + "px"), (t("HtmlViewerWindow").style.top = d + "px"));
+	if (navigator.maxTouchPoints !== 0) {
+		t("HtmlViewerWindowTitle").addEventListener("touchstart", function (event) {
+			m = event;
+			console.log(m.changedTouches[0].pageX);
+			(e = m.changedTouches[0].pageX - t("HtmlViewerWindow").offsetLeft), (o = m.changedTouches[0].pageY - t("HtmlViewerWindow").offsetTop), (n = !0);
 		}),
-		(document.onmouseup = function () {
-			n = !1;
-		});
+			(document.ontouchmove = function (event) {
+				m = event;
+				var u = 0,
+					d = 0;
+				!0 === n && ((u = m.changedTouches[0].pageX - e), (d = m.changedTouches[0].pageY - o), (t("HtmlViewerWindow").style.left = u + "px"), (t("HtmlViewerWindow").style.top = d + "px"));
+			}),
+			(document.ontouchend = function () {
+				n = !1;
+			});
+	} else {
+		t("HtmlViewerWindowTitle").addEventListener("mousedown", function (m) {
+			m = m || window.event;
+			(e = m.pageX - t("HtmlViewerWindow").offsetLeft), (o = m.pageY - t("HtmlViewerWindow").offsetTop), (n = !0);
+		}),
+			(document.onmousemove = function (m) {
+				m = m || window.event;
+				var u = 0,
+					d = 0;
+				!0 === n && ((u = m.pageX - e), (d = m.pageY - o), (t("HtmlViewerWindow").style.left = u + "px"), (t("HtmlViewerWindow").style.top = d + "px"));
+			}),
+			(document.onmouseup = function () {
+				n = !1;
+			});
+	}
 }
 
 /*      主 Class     */
 vboxStyleInit();
 vboxInit();
+
 class HtmlViewer {
 	constructor(runtime) {
 		this.runtime = runtime;
@@ -115,6 +133,13 @@ class HtmlViewer {
 					text: "基本功能",
 				},
 				{
+					opcode: "checkHtmlViewer",
+					blockType: Scratch.BlockType.REPORTER,
+					text: "窗口是否开启",
+					arguments: {},
+				},
+
+				{
 					opcode: "showHtml",
 					blockType: Scratch.BlockType.COMMAND,
 					text: "显示大小为 [width] × [height] 标题为 [title] 内容为 [html] 的窗口（单位：px）",
@@ -149,6 +174,21 @@ class HtmlViewer {
 						height: {
 							type: Scratch.ArgumentType.STRING,
 							defaultValue: "240",
+						},
+					},
+				},
+				{
+					opcode: "setHtmlViewerCoordinate",
+					blockType: Scratch.BlockType.COMMAND,
+					text: "更改窗口在屏幕上的坐标为 ( [left] , [top] ) （单位：px）",
+					arguments: {
+						left: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "100",
+						},
+						top: {
+							type: Scratch.ArgumentType.STRING,
+							defaultValue: "100",
 						},
 					},
 				},
@@ -413,8 +453,21 @@ class HtmlViewer {
 	}
 
 	setAnimation(args) {
+		// 设置动画
 		let box = document.getElementById("HtmlViewerBoxStyle");
 		box.innerHTML += "@keyframes htmlviewer-" + args.selector.replaceAll(" ", "").replaceAll("#", "").replaceAll(">", "").replaceAll(".", "").replaceAll("/", "").replaceAll("<", "").replaceAll("{", "").replaceAll("}", "") + "{from{" + args.from.replaceAll("{", "").replaceAll("}", "").replaceAll("/", "").replaceAll("<", "").replaceAll(">", "") + "}to{" + args.to.replaceAll("{", "").replaceAll("}", "").replaceAll("/", "").replaceAll("<", "").replaceAll(">", "") + "}}";
+	}
+
+	checkHtmlViewer() {
+		// 窗口是否开启
+		return document.getElementById("HtmlViewerWindow") !== null;
+	}
+
+	setHtmlViewerCoordinate(args) {
+		// 设置窗口在屏幕上的坐标
+		var hv = document.getElementById("HtmlViewerWindow");
+		hv.style.left = args.left;
+		hv.style.top = args.top;
 	}
 }
 Scratch.extensions.register(new HtmlViewer());
